@@ -1,114 +1,230 @@
-```markdown
-<p align="center">
-  <img src="https://img.shields.io/badge/Codec_Technologies-Internship_Submission-0052cc?style=for-the-badge" alt="Codec Internship Submission"/>
-  <img src="https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white" alt="Python 3.10+"/>
-  <img src="https://img.shields.io/badge/Flask-3.0+-000000?style=for-the-badge&logo=flask&logoColor=white" alt="Flask"/>
-  <img src="https://img.shields.io/badge/Security-AES_256_|_Packet_Filtering-00e676?style=for-the-badge&logo=shield&logoColor=white" alt="Security"/>
-</p>
+# 🛡️ Cybersecurity Capstone Portfolio
 
-<h1 align="center">🛡️ Cybersecurity Capstone Portfolio</h1>
+## Official Internship Submission Repository
 
-<p align="center">
-  <strong>Official submission repository for the Cybersecurity Internship Program.</strong><br>
-  This repository contains two production-grade security applications demonstrating applied network filtering and high-entropy cryptographic primitives.
-</p>
+This repository contains two production-grade cybersecurity applications developed as part of the official internship evaluation program. The projects demonstrate practical implementation of network security monitoring, traffic inspection, encryption systems, authenticated cryptographic operations, and secure application engineering using Python and Flask.
 
 ---
 
-## 👨‍💻 Developer & Institutional Attestation
+# 👨‍💻 Developer & Institutional Information
 
-| Field | Details |
-|-------|---------|
-| **Lead Engineer** | **Mohd Taha Azam** |
-| **Academic Credentials** | Department of Computer Science Engineering (CSE), MVSR Engineering College |
-| **Project Status** | Milestone Capstone Artifact / Internship Examination Submission |
-| **Domain Focus** | Network Topology Securing & Cryptographic Integrity Enforcement |
-| **Evaluator** | Codec Technologies India |
+| Field                  | Details                                                     |
+| ---------------------- | ----------------------------------------------------------- |
+| **Lead Developer**     | **Mohd Taha Azam**                                          |
+| **Project Type**       | Cybersecurity Internship Capstone Portfolio                 |
+| **Focus Domains**      | Network Security, Traffic Filtering, Cryptographic Systems  |
+| **Organization**       | Codec Technologies India                                    |
+| **Submission Purpose** | Internship Practical Examination & Institutional Assessment |
 
 ---
 
-## 📁 Integrated Master Structure
+# 📁 Repository Structure
 
 ```text
 Codec-Intern-Tasks/
 │
-├── 01- Defendrix-personal-firewall/            # Project 1: User-Space Firewall Engine
-│   ├── app.py                                  # Flask web dashboard entry point
-│   ├── firewall_activity.log                   # Persistent traffic audit trail logs
-│   ├── firewall_engine.py                      # Core packet interceptor and parser
-│   ├── firewall_rules.json                     # JSON network access control policies
-│   ├── requirements.txt                        # Third-party dependency configurations
+├── 01-Defendrix-Personal-Firewall/
+│   ├── app.py
+│   ├── firewall_engine.py
+│   ├── firewall_rules.json
+│   ├── firewall_activity.log
+│   ├── requirements.txt
 │   ├── static/
-│   │   └── style.css                           # Core CSS theme styling sheet
+│   │   └── style.css
 │   └── templates/
-│       └── dashboard.html                      # Real-time traffic observer console
+│       └── dashboard.html
 │
-├── 02-CipherCore-Cryptographic Tool Suite/     # Project 2: Encryption Engine & Vault
-│   ├── app.py                                  # Flask UI endpoints & application router
-│   ├── crypto_engine.py                        # Hardened AES-GCM & SHA-256 cryptographic backend
-│   ├── requirements.txt                        # Verified dependency requirements
+├── 02-CipherCore-Cryptographic-Tool-Suite/
+│   ├── app.py
+│   ├── crypto_engine.py
+│   ├── requirements.txt
 │   ├── static/
 │   │   ├── css/
-│   │   │   └── style.css                       # Dark-mode glassmorphic interface layout
+│   │   │   └── style.css
 │   │   └── js/
-│   │       └── ciphercore.js                   # Visual animation script & API adapter
+│   │       └── ciphercore.js
 │   └── templates/
-│       └── dashboard.html                      # Core interactive visualization platform
+│       └── dashboard.html
 │
-└── README.md                                   # This Integrated Master Portfolio Document
-
+└── README.md
 ```
 
 ---
 
-## 🌐 Module 1: Defendrix (User-Space Personal Firewall)
+# 🌐 Project 1 — Defendrix Personal Firewall
 
-**Defendrix** is a user-space network security monitoring and filtering application. It utilizes a multi-threaded architecture leveraging **Scapy** for real-time layer-3/layer-4 packet inspection, evaluates traffic dynamically against an optimized JSON rule matrix, maintains strict execution activity logs, and exposes a real-time **Flask web interface** for administrative visibility.
+## Overview
 
-### Key Capabilities:
+**Defendrix** is a user-space firewall and network monitoring application designed for real-time packet inspection and traffic analysis. The project leverages Python networking libraries to monitor live packets, evaluate traffic against configurable rule sets, and provide a centralized monitoring dashboard through Flask.
 
-* **Passive Inspection Mode:** Sniffs live network packets asynchronously without altering native kernel-level routing tables.
-* **Declarative Rules Engine:** Applies immediate mitigation strategies (`ALLOW`/`BLOCK`) based on user-defined configurations (`source_ip`, `port`, `protocol`) in `firewall_rules.json`.
-* **Stateful Audit Logging:** Offloads connection meta-records directly to `firewall_activity.log` for subsequent security incident reviews.
+The application demonstrates foundational concepts in:
 
-**Execution Guide:**
+* Packet inspection
+* Network traffic filtering
+* Rule-based access control
+* Security event logging
+* Real-time monitoring systems
+
+---
+
+## 🔍 Core Features
+
+### ✅ Real-Time Packet Monitoring
+
+Captures and analyzes live network packets asynchronously using Scapy without modifying native kernel routing behavior.
+
+### ✅ JSON-Based Rule Engine
+
+Applies filtering logic using configurable rule definitions such as:
+
+* Source IP filtering
+* Destination port filtering
+* Protocol inspection
+* Allow/Block decisions
+
+### ✅ Persistent Activity Logging
+
+Maintains structured audit logs inside:
+
+```text
+firewall_activity.log
+```
+
+for security monitoring and forensic review.
+
+### ✅ Web-Based Dashboard
+
+Provides a Flask-powered administrative dashboard for observing network activity and firewall decisions in real time.
+
+---
+
+## ⚙️ Technologies Used
+
+* Python
+* Flask
+* Scapy
+* HTML/CSS
+* JSON Configuration System
+
+---
+
+## 🚀 Execution Instructions
 
 ```bash
-cd "01- Defendrix-personal-firewall"
-pip install -r requirements.txt
-python app.py
-# Access dashboard at [http://127.0.0.1:5000](http://127.0.0.1:5000) (Requires Administrator/Root privileges)
+cd "01-Defendrix-Personal-Firewall"
 
+pip install -r requirements.txt
+
+python app.py
 ```
+
+Access the dashboard at:
+
+```text
+http://127.0.0.1:5000
+```
+
+> Note: Administrator/Root privileges may be required for packet sniffing operations.
 
 ---
 
-## 🔐 Module 2: CipherCore (Cryptographic Tool Suite)
+# 🔐 Project 2 — CipherCore Cryptographic Tool Suite
 
-**CipherCore** is an interactive, cryptographically hardened toolkit optimized to execute high-entropy data protection operations. To eliminate custom implementation vulnerabilities, the suite wraps verified primitives within the industry-standard `cryptography` library, deploying a premium dark-mode dashboard that animates the internal pipeline step-by-step.
+## Overview
 
-### Key Capabilities:
+**CipherCore** is a cryptographically hardened toolkit designed for secure encryption, hashing, and authenticated data protection operations. The project utilizes industry-standard cryptographic primitives from the Python `cryptography` library to ensure implementation reliability and security integrity.
 
-* **Authenticated Symmetric Encryption:** Utilizes **AES-256-GCM** to offer both data confidentiality and structural authenticity validation (tamper-proofing).
-* **Hardened Key Derivation:** Employs **PBKDF2** with HMAC-SHA256 (480,000 iterations) and 16-byte random salts to derive crypto-grade keys from text passwords.
-* **Data Integrity Hashing:** Generates fixed 256-bit **SHA-256** signatures for text entries and uploaded documents via an asynchronous file portal.
+The platform features an interactive dark-mode dashboard and demonstrates secure software engineering practices in modern cryptography.
 
-**Execution Guide:**
+---
+
+## 🔒 Core Features
+
+### ✅ AES-256-GCM Encryption
+
+Implements authenticated symmetric encryption using AES-256-GCM to provide:
+
+* Confidentiality
+* Integrity validation
+* Tamper detection
+
+### ✅ Secure Key Derivation
+
+Uses PBKDF2-HMAC-SHA256 with:
+
+* 480,000 iterations
+* Random 16-byte salts
+
+to derive secure encryption keys from passwords.
+
+### ✅ SHA-256 Hash Generation
+
+Supports secure hashing for:
+
+* Text input
+* Uploaded files
+* Integrity verification workflows
+
+### ✅ Interactive Dashboard
+
+Provides a visually enhanced Flask interface with animated cryptographic workflow visualization.
+
+---
+
+## ⚙️ Technologies Used
+
+* Python
+* Flask
+* Cryptography Library
+* JavaScript
+* HTML/CSS
+
+---
+
+## 🚀 Execution Instructions
 
 ```bash
-cd "02-CipherCore-Cryptographic Tool Suite"
-pip install -r requirements.txt
-python app.py
-# Access interactive UI at [http://127.0.0.1:5000](http://127.0.0.1:5000)
+cd "02-CipherCore-Cryptographic-Tool-Suite"
 
+pip install -r requirements.txt
+
+python app.py
+```
+
+Access the application at:
+
+```text
+http://127.0.0.1:5000
 ```
 
 ---
 
-## 📄 License & Compliance
+# 🧠 Security Concepts Demonstrated
 
-This technical deployment ecosystem was constructed and validated under high-performance grading criteria to complete the practical execution requirements of the official Codec Technologies Cybersecurity Internship curriculum. All modules, design components, and codebase architectures are certified compliant and ready for institutional assessment. All rights reserved.
+This repository demonstrates applied understanding of:
 
-```
+* Network packet analysis
+* Firewall rule evaluation
+* Traffic inspection workflows
+* Cryptographic authentication
+* Secure key derivation
+* AES-GCM encryption
+* SHA-256 hashing
+* Secure Flask application architecture
+* Security logging and monitoring
 
-```
+---
+
+# 📚 Educational & Institutional Purpose
+
+This repository was developed as part of the official cybersecurity internship curriculum under Codec Technologies India. The projects were designed to satisfy practical implementation requirements for institutional evaluation and demonstrate applied cybersecurity engineering skills.
+
+---
+
+# 📄 License
+
+This repository is submitted strictly for academic, educational, and internship evaluation purposes.
+
+All project source code, UI assets, documentation, and architectural designs are reserved under the author's ownership unless otherwise specified.
+
+© Mohd Taha Azam — All Rights Reserved.
