@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CipherCore — Cryptographic Tool Suite</title>
+    <meta name="description" content="Production-grade cryptographic tool suite with AES-256-GCM encryption, PBKDF2 key derivation, and SHA-256 hashing. Built by Mohd Taha Azam.">
+    <meta name="author" content="Mohd Taha Azam">
+    <meta name="theme-color" content="#060b18">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         BACKGROUND DECORATIVE ELEMENTS
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow--cyan"></div>
+    <div class="bg-glow bg-glow--purple"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         APP CONTAINER
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="app-container">
+
+        <!-- ─── HEADER ──────────────────────────────────────────── -->
+        <header class="app-header">
+            <!-- Animated Shield Icon -->
+            <div class="header-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="M12 8v4" opacity="0.7"/>
+                    <circle cx="12" cy="15" r="0.5" fill="currentColor" opacity="0.7"/>
+                </svg>
+            </div>
+
+            <!-- Title -->
+            <h1 class="app-title">CipherCore</h1>
+            <p class="app-subtitle">Cryptographic Tool Suite</p>
+
+            <!-- Algorithm Badges -->
+            <div class="header-badges">
+                <span class="header-badge">
+                    <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="12" height="8" rx="1.5"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>
+                    AES-256-GCM
+                </span>
+                <span class="header-badge">
+                    <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2l-1.5 1.5M8.27 8.27a3.5 3.5 0 1 1-5.04 5.04 3.5 3.5 0 0 1 5.04-5.04zM10.5 5.5l1.5 1.5L14 5l-2-2-1.5 1.5"/></svg>
+                    PBKDF2
+                </span>
+                <span class="header-badge">
+                    <svg viewBox="0 0 16 16" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="6" x2="14" y2="6"/><line x1="2" y1="10" x2="14" y2="10"/><line x1="7" y1="2" x2="5.5" y2="14"/><line x1="10.5" y1="2" x2="9" y2="14"/></svg>
+                    SHA-256
+                </span>
+            </div>
+        </header>
+
+        <!-- ─── NAVIGATION TABS ─────────────────────────────────── -->
+        <nav class="tab-group" role="tablist" aria-label="Cryptographic operations">
+            <button class="tab-btn active" data-tab="encrypt" id="tab-encrypt" role="tab" aria-selected="true" aria-controls="panel-encrypt">
+                <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="9" width="14" height="9" rx="2"/>
+                    <path d="M6 9V6a4 4 0 0 1 8 0v3"/>
+                </svg>
+                <span>Encrypt</span>
+            </button>
+            <button class="tab-btn" data-tab="decrypt" id="tab-decrypt" role="tab" aria-selected="false" aria-controls="panel-decrypt">
+                <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="9" width="14" height="9" rx="2"/>
+                    <path d="M6 9V6a4 4 0 0 1 7.92-.8"/>
+                </svg>
+                <span>Decrypt</span>
+            </button>
+            <button class="tab-btn" data-tab="hash" id="tab-hash" role="tab" aria-selected="false" aria-controls="panel-hash">
+                <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="7" x2="17" y2="7"/>
+                    <line x1="3" y1="13" x2="17" y2="13"/>
+                    <line x1="8" y1="2" x2="6.5" y2="18"/>
+                    <line x1="13.5" y1="2" x2="12" y2="18"/>
+                </svg>
+                <span>Hash</span>
+            </button>
+        </nav>
+
+        <!-- ─── MAIN CONTENT GRID ───────────────────────────────── -->
+        <main class="main-grid">
+
+            <!-- ═════════ LEFT COLUMN: Input Forms ═════════ -->
+            <section class="input-column">
+
+                <!-- ── ENCRYPT PANEL ──────────────────────── -->
+                <div class="tab-panel active" id="panel-encrypt" role="tabpanel" aria-labelledby="tab-encrypt">
+                    <div class="glass-card">
+                        <h2 class="card-title">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                            Symmetric Encryption
+                        </h2>
+                        <p class="card-description">AES-256-GCM with PBKDF2 key derivation</p>
+
+                        <form id="encrypt-form" autocomplete="off">
+                            <div class="input-group">
+                                <label for="encrypt-plaintext">Plaintext Message</label>
+                                <textarea class="crypto-textarea" id="encrypt-plaintext" placeholder="Enter your secret message..." rows="4" spellcheck="false"></textarea>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="encrypt-password">Security Passphrase</label>
+                                <div class="password-wrapper">
+                                    <input type="password" class="crypto-input" id="encrypt-password" placeholder="Enter a strong passphrase" autocomplete="new-password">
+                                    <button type="button" class="password-toggle" aria-label="Toggle password visibility" id="toggle-encrypt-pw">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                            <circle cx="12" cy="12" r="3"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-primary" id="btn-encrypt">
+                                <svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="9" width="14" height="9" rx="2"/>
+                                    <path d="M6 9V6a4 4 0 0 1 8 0v3"/>
+                                </svg>
+                                <span class="btn-text">Encrypt Message</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ── DECRYPT PANEL ──────────────────────── -->
+                <div class="tab-panel" id="panel-decrypt" role="tabpanel" aria-labelledby="tab-decrypt">
+                    <div class="glass-card">
+                        <h2 class="card-title">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 9.9-1"/>
+                            </svg>
+                            Symmetric Decryption
+                        </h2>
+                        <p class="card-description">Verify authenticity and recover plaintext</p>
+
+                        <form id="decrypt-form" autocomplete="off">
+                            <div class="input-group">
+                                <label for="decrypt-ciphertext">Ciphertext (Base64)</label>
+                                <textarea class="crypto-textarea" id="decrypt-ciphertext" placeholder="Paste ciphertext..." rows="3" spellcheck="false"></textarea>
+                            </div>
+
+                            <div class="input-group">
+                                <label for="decrypt-iv">Initialization Vector (Base64)</label>
+                                <input type="text" class="crypto-input" id="decrypt-iv" placeholder="IV value" spellcheck="false">
+                            </div>
+
+                            <div class="input-group">
+                                <label for="decrypt-salt">Salt (Base64)</label>
+                                <input type="text" class="crypto-input" id="decrypt-salt" placeholder="Salt value" spellcheck="false">
+                            </div>
+
+                            <div class="input-group">
+                                <label for="decrypt-tag">Authentication Tag (Base64)</label>
+                                <input type="text" class="crypto-input" id="decrypt-tag" placeholder="Auth tag value" spellcheck="false">
+                            </div>
+
+                            <div class="input-group">
+                                <label for="decrypt-password">Security Passphrase</label>
+                                <div class="password-wrapper">
+                                    <input type="password" class="crypto-input" id="decrypt-password" placeholder="Enter passphrase" autocomplete="off">
+                                    <button type="button" class="password-toggle" aria-label="Toggle password visibility" id="toggle-decrypt-pw">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                            <circle cx="12" cy="12" r="3"/>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-primary" id="btn-decrypt">
+                                <svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="9" width="14" height="9" rx="2"/>
+                                    <path d="M6 9V6a4 4 0 0 1 7.92-.8"/>
+                                </svg>
+                                <span class="btn-text">Decrypt &amp; Verify</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ── HASH PANEL ─────────────────────────── -->
+                <div class="tab-panel" id="panel-hash" role="tabpanel" aria-labelledby="tab-hash">
+                    <div class="glass-card">
+                        <h2 class="card-title">
+                            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="4" y1="9" x2="20" y2="9"/>
+                                <line x1="4" y1="15" x2="20" y2="15"/>
+                                <line x1="10" y1="3" x2="8" y2="21"/>
+                                <line x1="16" y1="3" x2="14" y2="21"/>
+                            </svg>
+                            SHA-256 Hashing
+                        </h2>
+                        <p class="card-description">Generate cryptographic fingerprints</p>
+
+                        <!-- Text Hashing -->
+                        <form id="hash-text-form" autocomplete="off">
+                            <div class="input-group">
+                                <label for="hash-text-input">Text Input</label>
+                                <textarea class="crypto-textarea" id="hash-text-input" placeholder="Enter text to hash..." rows="3" spellcheck="false"></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-primary" id="btn-hash-text">
+                                <svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="3" y1="7" x2="17" y2="7"/>
+                                    <line x1="3" y1="13" x2="17" y2="13"/>
+                                    <line x1="8" y1="2" x2="6.5" y2="18"/>
+                                    <line x1="13.5" y1="2" x2="12" y2="18"/>
+                                </svg>
+                                <span class="btn-text">Generate Hash</span>
+                            </button>
+                        </form>
+
+                        <!-- Divider -->
+                        <div class="section-divider"><span>OR</span></div>
+
+                        <!-- File Hashing Drop Zone -->
+                        <div class="drop-zone" id="file-drop-zone">
+                            <div class="drop-zone-content">
+                                <div class="drop-zone-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="16 16 12 12 8 16"/>
+                                        <line x1="12" y1="12" x2="12" y2="21"/>
+                                        <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+                                        <polyline points="16 16 12 12 8 16"/>
+                                    </svg>
+                                </div>
+                                <p class="drop-zone-title">Drag &amp; drop a file here</p>
+                                <p class="drop-zone-subtitle">or click to select</p>
+                            </div>
+                            <input type="file" id="file-input" hidden>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ═════════ RIGHT COLUMN: Pipeline & Results ═════════ -->
+            <section class="output-column">
+                <div class="glass-card" id="output-card">
+                    <h2 class="card-title">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+                        </svg>
+                        Cryptographic Pipeline
+                    </h2>
+                    <p class="card-description" id="pipeline-status">Waiting for operation...</p>
+
+                    <!-- Pipeline Visualization Container -->
+                    <div class="pipeline-container" id="pipeline-container">
+                        <div class="pipeline-empty-state" id="pipeline-empty">
+                            <!-- Decorative circuit/flow SVG -->
+                            <svg viewBox="0 0 120 120" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="60" cy="20" r="8" opacity="0.3"/>
+                                <line x1="60" y1="28" x2="60" y2="42" stroke-dasharray="3 3" opacity="0.2"/>
+                                <rect x="44" y="42" width="32" height="16" rx="3" opacity="0.2"/>
+                                <line x1="60" y1="58" x2="60" y2="72" stroke-dasharray="3 3" opacity="0.2"/>
+                                <rect x="44" y="72" width="32" height="16" rx="3" opacity="0.2"/>
+                                <line x1="60" y1="88" x2="60" y2="100" stroke-dasharray="3 3" opacity="0.2"/>
+                                <circle cx="60" cy="108" r="6" opacity="0.3"/>
+                                <!-- Side connectors -->
+                                <line x1="44" y1="50" x2="28" y2="50" stroke-dasharray="2 2" opacity="0.1"/>
+                                <circle cx="24" cy="50" r="3" opacity="0.15"/>
+                                <line x1="76" y1="80" x2="92" y2="80" stroke-dasharray="2 2" opacity="0.1"/>
+                                <circle cx="96" cy="80" r="3" opacity="0.15"/>
+                            </svg>
+                            <p>Execute an operation to visualize the cryptographic pipeline</p>
+                        </div>
+                    </div>
+
+                    <!-- Results Display Area -->
+                    <div class="result-container" id="result-container" style="display:none;">
+                        <!-- Dynamically populated by JavaScript -->
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- ─── FOOTER ──────────────────────────────────────────── -->
+        <footer class="app-footer">
+            <p>CipherCore v1.0 — Built by <strong>Mohd Taha Azam</strong></p>
+            <p class="footer-sub">AES-256-GCM • PBKDF2-HMAC-SHA256 • SHA-256</p>
+        </footer>
+
+    </div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         TOAST NOTIFICATION CONTAINER
+         ═══════════════════════════════════════════════════════════ -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         SCRIPT
+         ═══════════════════════════════════════════════════════════ -->
+    <script src="{{ url_for('static', filename='js/ciphercore.js') }}"></script>
+
+</body>
+</html>

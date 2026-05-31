@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Personal Firewall — Real-time packet monitoring dashboard with live traffic analysis and rule enforcement." />
+    <title>Personal Firewall — Live Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- TOP NAVIGATION BAR                                          -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-brand">
+            <span class="brand-icon">🛡️</span>
+            <span class="brand-text">Personal Firewall</span>
+            <span class="brand-version">v1.0.0</span>
+        </div>
+        <div class="navbar-status">
+            <span class="status-dot" id="statusDot"></span>
+            <span class="status-text" id="statusText">Connecting…</span>
+            <span class="uptime-badge" id="uptimeBadge">00:00:00</span>
+        </div>
+    </nav>
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- MAIN CONTENT                                                -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <main class="dashboard">
+
+        <!-- ── Metric Cards ────────────────────────────────────── -->
+        <section class="metrics-grid" id="metricsSection">
+            <div class="metric-card metric-total" id="cardTotal">
+                <div class="metric-icon">📡</div>
+                <div class="metric-body">
+                    <span class="metric-label">Packets Scanned</span>
+                    <span class="metric-value" id="metricTotal">0</span>
+                </div>
+                <div class="metric-bar">
+                    <div class="metric-bar-fill bar-total" id="barTotal"></div>
+                </div>
+            </div>
+            <div class="metric-card metric-allowed" id="cardAllowed">
+                <div class="metric-icon">✅</div>
+                <div class="metric-body">
+                    <span class="metric-label">Allowed</span>
+                    <span class="metric-value" id="metricAllowed">0</span>
+                </div>
+                <div class="metric-bar">
+                    <div class="metric-bar-fill bar-allowed" id="barAllowed"></div>
+                </div>
+            </div>
+            <div class="metric-card metric-blocked" id="cardBlocked">
+                <div class="metric-icon">🚫</div>
+                <div class="metric-body">
+                    <span class="metric-label">Blocked</span>
+                    <span class="metric-value" id="metricBlocked">0</span>
+                </div>
+                <div class="metric-bar">
+                    <div class="metric-bar-fill bar-blocked" id="barBlocked"></div>
+                </div>
+            </div>
+            <div class="metric-card metric-rate" id="cardRate">
+                <div class="metric-icon">⚡</div>
+                <div class="metric-body">
+                    <span class="metric-label">Packets / sec</span>
+                    <span class="metric-value" id="metricRate">0</span>
+                </div>
+                <div class="metric-bar">
+                    <div class="metric-bar-fill bar-rate" id="barRate"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ── Two-Column Layout: Log + Rules ──────────────────── -->
+        <section class="content-grid">
+
+            <!-- ── Live Activity Log ───────────────────────────── -->
+            <div class="panel panel-log" id="panelLog">
+                <div class="panel-header">
+                    <h2 class="panel-title">
+                        <span class="pulse-dot"></span>
+                        Live Activity Log
+                    </h2>
+                    <span class="panel-badge" id="logCount">0 entries</span>
+                </div>
+                <div class="table-wrapper" id="tableWrapper">
+                    <table class="log-table" id="logTable">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Action</th>
+                                <th>Protocol</th>
+                                <th>Source</th>
+                                <th>Destination</th>
+                                <th>Reason</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logBody">
+                            <tr class="empty-row">
+                                <td colspan="6">Waiting for packets…</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ── Rules Panel ─────────────────────────────────── -->
+            <div class="panel panel-rules" id="panelRules">
+                <div class="panel-header">
+                    <h2 class="panel-title">🔒 Active Rules</h2>
+                </div>
+                <div class="rules-content" id="rulesContent">
+                    <div class="rules-placeholder">Loading rules…</div>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- FOOTER                                                      -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <footer class="footer" id="footer">
+        <span>Personal Firewall Engine </span>
+        <span class="footer-sep">|</span>
+        <span>A Project By Mohd Taha Azam</span>
+    </footer>
+
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <!-- CLIENT-SIDE JAVASCRIPT                                      -->
+    <!-- ════════════════════════════════════════════════════════════ -->
+    <script>
+    (function () {
+        "use strict";
+
+        // Polling interval in milliseconds
+        const POLL_MS = 1500;
+
+        // DOM element cache
+        const dom = {
+            statusDot:     document.getElementById("statusDot"),
+            statusText:    document.getElementById("statusText"),
+            uptimeBadge:   document.getElementById("uptimeBadge"),
+            metricTotal:   document.getElementById("metricTotal"),
+            metricAllowed: document.getElementById("metricAllowed"),
+            metricBlocked: document.getElementById("metricBlocked"),
+            metricRate:    document.getElementById("metricRate"),
+            barTotal:      document.getElementById("barTotal"),
+            barAllowed:    document.getElementById("barAllowed"),
+            barBlocked:    document.getElementById("barBlocked"),
+            barRate:       document.getElementById("barRate"),
+            logBody:       document.getElementById("logBody"),
+            logCount:      document.getElementById("logCount"),
+            rulesContent:  document.getElementById("rulesContent"),
+            tableWrapper:  document.getElementById("tableWrapper"),
+        };
+
+        let previousLogLength = 0;
+        let rulesLoaded = false;
+
+        // ── Number Formatting ──────────────────────────────────
+        function fmtNum(n) {
+            return Number(n).toLocaleString();
+        }
+
+        // ── Animate a metric counter ──────────────────────────
+        function animateValue(el, newVal) {
+            const current = parseInt(el.textContent.replace(/,/g, ""), 10) || 0;
+            if (current !== newVal) {
+                el.textContent = fmtNum(newVal);
+                el.classList.add("metric-flash");
+                setTimeout(() => el.classList.remove("metric-flash"), 400);
+            }
+        }
+
+        // ── Fetch Metrics ──────────────────────────────────────
+        async function fetchMetrics() {
+            try {
+                const res = await fetch("/api/metrics");
+                if (!res.ok) throw new Error(res.statusText);
+                const m = await res.json();
+
+                animateValue(dom.metricTotal, m.total);
+                animateValue(dom.metricAllowed, m.allowed);
+                animateValue(dom.metricBlocked, m.blocked);
+                dom.metricRate.textContent = m.rate;
+                dom.uptimeBadge.textContent = m.uptime;
+
+                // Animated bars (percentage of total)
+                const maxBar = Math.max(m.total, 1);
+                dom.barAllowed.style.width = ((m.allowed / maxBar) * 100) + "%";
+                dom.barBlocked.style.width = ((m.blocked / maxBar) * 100) + "%";
+                dom.barTotal.style.width = "100%";
+                dom.barRate.style.width = Math.min((m.rate / 100) * 100, 100) + "%";
+
+                // Status indicator
+                dom.statusDot.classList.add("status-online");
+                dom.statusDot.classList.remove("status-offline");
+                dom.statusText.textContent = "Online";
+            } catch (e) {
+                dom.statusDot.classList.add("status-offline");
+                dom.statusDot.classList.remove("status-online");
+                dom.statusText.textContent = "Offline";
+            }
+        }
+
+        // ── Fetch Logs ─────────────────────────────────────────
+        async function fetchLogs() {
+            try {
+                const res = await fetch("/api/logs");
+                if (!res.ok) throw new Error(res.statusText);
+                const logs = await res.json();
+
+                if (logs.length === previousLogLength) return;
+                previousLogLength = logs.length;
+
+                dom.logCount.textContent = logs.length + " entries";
+
+                // Build table rows (newest first)
+                const fragment = document.createDocumentFragment();
+                for (let i = logs.length - 1; i >= 0; i--) {
+                    const entry = logs[i];
+                    const tr = document.createElement("tr");
+                    tr.className = entry.action === "BLOCK" ? "row-block" : "row-allow";
+
+                    tr.innerHTML =
+                        '<td class="col-time">' + escapeHtml(entry.timestamp) + "</td>" +
+                        '<td class="col-action"><span class="badge badge-' +
+                            entry.action.toLowerCase() + '">' + entry.action + "</span></td>" +
+                        '<td class="col-proto">' + escapeHtml(entry.protocol) + "</td>" +
+                        '<td class="col-src">' + escapeHtml(entry.source) + "</td>" +
+                        '<td class="col-dst">' + escapeHtml(entry.destination) + "</td>" +
+                        '<td class="col-reason">' + escapeHtml(entry.reason) + "</td>";
+
+                    fragment.appendChild(tr);
+                }
+
+                dom.logBody.innerHTML = "";
+                dom.logBody.appendChild(fragment);
+
+                // Auto-scroll to top (newest entries)
+                dom.tableWrapper.scrollTop = 0;
+            } catch (e) {
+                // silent
+            }
+        }
+
+        // ── Fetch Rules (once) ─────────────────────────────────
+        async function fetchRules() {
+            if (rulesLoaded) return;
+            try {
+                const res = await fetch("/api/rules");
+                if (!res.ok) throw new Error(res.statusText);
+                const rules = await res.json();
+                rulesLoaded = true;
+
+                let html = "";
+
+                // Default policy
+                html += '<div class="rule-group">';
+                html += '<div class="rule-group-title">Default Policy</div>';
+                html += '<span class="badge badge-' +
+                    (rules.default_policy === "ALLOW" ? "allow" : "block") + '">' +
+                    rules.default_policy + "</span>";
+                html += "</div>";
+
+                // Blocked IPs
+                if (rules.blocked_ips.length > 0) {
+                    html += '<div class="rule-group">';
+                    html += '<div class="rule-group-title">🔴 Blocked Source IPs</div>';
+                    html += '<ul class="rule-list">';
+                    rules.blocked_ips.forEach(function (ip) {
+                        html += '<li class="rule-item rule-blocked">' + escapeHtml(ip) + "</li>";
+                    });
+                    html += "</ul></div>";
+                }
+
+                // Blocked Ports
+                if (rules.blocked_ports.length > 0) {
+                    html += '<div class="rule-group">';
+                    html += '<div class="rule-group-title">🔴 Blocked Destination Ports</div>';
+                    html += '<ul class="rule-list">';
+                    rules.blocked_ports.forEach(function (p) {
+                        html += '<li class="rule-item rule-blocked">Port ' + p + "</li>";
+                    });
+                    html += "</ul></div>";
+                }
+
+                // Blocked Protocols
+                if (rules.blocked_protocols.length > 0) {
+                    html += '<div class="rule-group">';
+                    html += '<div class="rule-group-title">🔴 Blocked Protocols</div>';
+                    html += '<ul class="rule-list">';
+                    rules.blocked_protocols.forEach(function (pr) {
+                        html += '<li class="rule-item rule-blocked">' + escapeHtml(pr) + "</li>";
+                    });
+                    html += "</ul></div>";
+                }
+
+                // Named rules
+                if (rules.named_rules.length > 0) {
+                    html += '<div class="rule-group">';
+                    html += '<div class="rule-group-title">📋 Named Rules</div>';
+                    html += '<ul class="rule-list">';
+                    rules.named_rules.forEach(function (r) {
+                        html += '<li class="rule-item">';
+                        html += '<strong>' + escapeHtml(r.name) + "</strong>";
+                        html += '<span class="rule-desc"> — ' + escapeHtml(r.description) + "</span>";
+                        html += "</li>";
+                    });
+                    html += "</ul></div>";
+                }
+
+                dom.rulesContent.innerHTML = html;
+            } catch (e) {
+                dom.rulesContent.innerHTML = '<div class="rules-placeholder">Failed to load rules.</div>';
+            }
+        }
+
+        // ── Utility: HTML Escape ───────────────────────────────
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return "—";
+            var div = document.createElement("div");
+            div.appendChild(document.createTextNode(String(str)));
+            return div.innerHTML;
+        }
+
+        // ── Main Loop ─────────────────────────────────────────
+        function poll() {
+            fetchMetrics();
+            fetchLogs();
+            fetchRules();
+        }
+
+        // Initial fetch, then poll
+        poll();
+        setInterval(poll, POLL_MS);
+    })();
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,85 @@
+{
+    "firewall_rules": {
+        "description": "Personal Firewall Rule Configuration",
+        "version": "1.0.0",
+        "default_policy": "ALLOW",
+
+        "blocked_source_ips": [
+            "10.0.0.100",
+            "192.168.1.50",
+            "172.16.0.99"
+        ],
+
+        "blocked_destination_ports": [
+            23,
+            8080,
+            6667,
+            6668,
+            6669,
+            4444,
+            5555,
+            31337
+        ],
+
+        "blocked_protocols": [
+            "ICMP"
+        ],
+
+        "rules": [
+            {
+                "id": 1,
+                "name": "Block Telnet",
+                "description": "Block all traffic destined for Telnet port 23",
+                "type": "port",
+                "value": 23,
+                "action": "BLOCK",
+                "enabled": true
+            },
+            {
+                "id": 2,
+                "name": "Block Suspicious Host",
+                "description": "Block traffic from known malicious source IP",
+                "type": "source_ip",
+                "value": "10.0.0.100",
+                "action": "BLOCK",
+                "enabled": true
+            },
+            {
+                "id": 3,
+                "name": "Block ICMP Ping",
+                "description": "Drop all incoming ICMP/ping requests",
+                "type": "protocol",
+                "value": "ICMP",
+                "action": "BLOCK",
+                "enabled": true
+            },
+            {
+                "id": 4,
+                "name": "Block IRC Ports",
+                "description": "Block common IRC botnet command-and-control ports",
+                "type": "port",
+                "value": 6667,
+                "action": "BLOCK",
+                "enabled": true
+            },
+            {
+                "id": 5,
+                "name": "Block Backdoor Port",
+                "description": "Block known backdoor/trojan port 31337 (eleet)",
+                "type": "port",
+                "value": 31337,
+                "action": "BLOCK",
+                "enabled": true
+            },
+            {
+                "id": 6,
+                "name": "Block Proxy Port",
+                "description": "Block traffic to common proxy port 8080",
+                "type": "port",
+                "value": 8080,
+                "action": "BLOCK",
+                "enabled": true
+            }
+        ]
+    }
+}
